@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.MainActivity">
+    <item
+        android:id="@+id/action_more"
+        android:icon="@drawable/baseline_menu_white_48dp"
+        android:title="더보기"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/workout_start"
+                android:icon="@drawable/baseline_directions_run_black_48dp"
+                android:orderInCategory="100"
+                android:title="운동 시작" />
+
+            <item
+                android:id="@+id/add_challenge"
+                android:icon="@drawable/baseline_add_black_48dp"
+                android:orderInCategory="100"
+                android:title="챌린지 추가" />
+        </menu>
+    </item>
+</menu>
