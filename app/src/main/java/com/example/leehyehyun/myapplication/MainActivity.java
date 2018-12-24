@@ -1,6 +1,7 @@
 package com.example.leehyehyun.myapplication;
 
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity {
+    private static final int ADDED_CHALLENGE = 126;
+
     private ListView list_view;
     private MainListAdapter mainListAdapter;
     ArrayList<Challenge> arrChallenge = new ArrayList<Challenge>();
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.add_challenge:
                 Intent intent2 = new Intent(MainActivity.this, AddChallengeActivity.class);
-                startActivity(intent2);
+                startActivityForResult(intent2, ADDED_CHALLENGE);
 
                 return true;
             default:
@@ -102,5 +105,21 @@ public class MainActivity extends AppCompatActivity {
         arrWorkOut3.add(new WorkOut("시티드 니업", R.drawable.sited_knee_up));
         arrChallenge.add(new Challenge("복근운동챌린지", arrWorkOut3));
         return arrWorkOut3;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ADDED_CHALLENGE && resultCode == RESULT_OK && data != null){
+//            intent.putExtra("challenge_name",editChallengeName.getText().toString());
+//            intent.putExtra("arr_workout",arrWorkoutList);
+
+            String str = data.getStringExtra("challenge_name");
+            ArrayList<WorkOut> arr = (ArrayList<WorkOut>)data.getSerializableExtra("arr_workout");
+
+            // TODO db에 추가하려는 챌린지 정보 넣기
+            // TODO db에서 챌린지 정보 읽어와 메인의 리스트 갱신하기
+
+        }
     }
 }

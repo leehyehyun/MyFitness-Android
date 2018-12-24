@@ -1,27 +1,31 @@
 package com.example.leehyehyun.myapplication;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 
 public class AddChallengeActivity extends AppCompatActivity {
+    private static final int ADDED_WORKOUT = 125;
+
     private EditText editChallengeName;
-    private ScrollView addviewScroll;
-    private LinearLayout addviewArea;
+    private ListView list_view;
+    private Button btn_add_workout;
+    private RelativeLayout hidden_view;
+
+    private ArrayList<WorkOut> arrWorkoutList = new ArrayList<>();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -38,10 +42,19 @@ public class AddChallengeActivity extends AppCompatActivity {
                 return true;
             case R.id.action_save:
                 if(editChallengeName.getText().toString().isEmpty()){
-                    Toast.makeText(getApplicationContext(), "내용을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "챌린지 이름을 입력해주세요.", Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                Toast.makeText(getApplicationContext(), "챌린지 저장 : "+editChallengeName.getText().toString()+" / arrSize : "+arrWorkOutList.size(), Toast.LENGTH_SHORT).show();
+                if(arrWorkoutList.size() == 0){
+                    Toast.makeText(getApplicationContext(), "운동을 추가해주세요.", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
+                Intent intent = new Intent();
+                intent.putExtra("challenge_name",editChallengeName.getText().toString());
+                intent.putExtra("arr_workout",arrWorkoutList);
+                setResult(RESULT_OK, intent);
+
                 finish();
                 return true;
             default:
@@ -49,61 +62,56 @@ public class AddChallengeActivity extends AppCompatActivity {
         }
     }
 
+    private AddChallengeListAdapter mListAdapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_challenge);
+        setContentView(R.layout.activity_add_challenge2);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        editChallengeName = (EditText)findViewById(R.id.edit_challenge_name);
-        addviewScroll = (ScrollView)findViewById(R.id.addview_scroll);
-        addviewArea = (LinearLayout)findViewById(R.id.addview_area);
+        editChallengeName = findViewById(R.id.edit_challenge_name);
+        list_view = findViewById(R.id.list_view);
+        btn_add_workout = findViewById(R.id.btn_add_workout);
+        hidden_view = findViewById(R.id.hidden_view);
 
-        addview(true);
+        mListAdapter = new AddChallengeListAdapter(AddChallengeActivity.this);
+        list_view.setAdapter(mListAdapter);
+
+        showHiddenView();
+
+        btn_add_workout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 팝업띄워서 운동 추가하기
+                Intent intent = new Intent(AddChallengeActivity.this, AddWorkoutActivity.class);
+                startActivityForResult(intent, ADDED_WORKOUT);
+
+            }
+        });
 
     }
 
-    private ArrayList<WorkOut> arrWorkOutList = new ArrayList<>();
-    private void addview(boolean isFirst){
-        if(isFirst){
-            addviewArea.removeAllViews();
+    private void showHiddenView(){
+        if(mListAdapter.getCount() == 0){
+            hidden_view.setVisibility(View.VISIBLE);
+        }else{
+            hidden_view.setVisibility(View.GONE);
         }
-        View view = getLayoutInflater().inflate(R.layout.item_add_challenge, null, false);
-        EditText mEditText = (EditText) view.findViewById(R.id.edittext_workout);
-        ImageView mImgPhoto= (ImageView) view.findViewById(R.id.img_photo);
-        ImageView mImgAdd = (ImageView) view.findViewById(R.id.img_add);
-        ImageView mImgRemove = (ImageView) view.findViewById(R.id.img_remove);
-        addviewArea.addView(view);
-//        if(!mEditText.getText().toString().isEmpty()){
-//            arrWorkOutList.add(new WorkOut(mEditText.getText().toString(), -1)); // 이미지는 나중에 넣기. 일단 -1로 고정해서 넣음
-//        }
+    }
 
-        mImgPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "서비스 준비중입니다.", Toast.LENGTH_SHORT).show();
-            }
-        });
-        mImgAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addview(false);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADDED_WORKOUT && resultCode == RESULT_OK && data != null) {
+            String workoutName = data.getStringExtra("workoutName");
+            String imagePath = data.getStringExtra("imagePath");
+            mListAdapter.addItem(new WorkOut(workoutName, imagePath, ""));
+            showHiddenView();
 
-            }
-        });
-        mImgRemove.setTag(view);
-        mImgRemove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(addviewArea.getChildCount() <= 1){
-                    return;
-                }
-                View view = (View)v.getTag();
-                addviewArea.removeView(view);
-                Log.v("is-","getChildCount : "+addviewArea.getChildCount());
-            }
-        });
+            arrWorkoutList = mListAdapter.getWorkoutList();
+        }
+
     }
 
 

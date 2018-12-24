@@ -8,6 +8,13 @@ public class WorkOut implements Serializable {
     private boolean checked = false;
     private int image;
     private String strCompleteDate;
+    private String imagePath;
+
+    public WorkOut(String name, String imagePath, String strCompleteDate) {
+        this.name = name;
+        this.imagePath = imagePath;
+        this.strCompleteDate = strCompleteDate;
+    }
 
     public WorkOut(String name, String strCompleteDate) {
         this.name = name;
@@ -50,5 +57,13 @@ public class WorkOut implements Serializable {
 
     public void setStrCompleteDate(String strCompleteDate) {
         this.strCompleteDate = strCompleteDate;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }
