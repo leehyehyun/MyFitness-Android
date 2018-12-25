@@ -1,6 +1,8 @@
 package com.example.leehyehyun.myapplication;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -32,7 +34,9 @@ public class WorkOutImageActivity extends AppCompatActivity {
         Bundle args = intent.getBundleExtra("bundle");
         WorkOut workout = (WorkOut) args.getSerializable("workout");
 
-        ImageView imgWorkout = (ImageView)findViewById(R.id.workout_imageview);
-        imgWorkout.setImageResource(workout.getImage());
+        ImageView imgWorkout = findViewById(R.id.workout_imageview);
+
+        Bitmap bitmap = BitmapFactory.decodeFile(workout.getImagePath());
+        imgWorkout.setImageBitmap(bitmap);
     }
 }

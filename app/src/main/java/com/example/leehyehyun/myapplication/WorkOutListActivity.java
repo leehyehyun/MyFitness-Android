@@ -58,7 +58,7 @@ public class WorkOutListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
 
-        list_view = (ListView)findViewById(R.id.list_view);
+        list_view = findViewById(R.id.list_view);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

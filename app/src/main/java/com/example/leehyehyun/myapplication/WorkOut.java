@@ -1,12 +1,10 @@
 package com.example.leehyehyun.myapplication;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class WorkOut implements Serializable {
     private String name;
     private boolean checked = false;
-    private int image;
     private String strCompleteDate;
     private String imagePath;
 
@@ -19,16 +17,6 @@ public class WorkOut implements Serializable {
     public WorkOut(String name, String strCompleteDate) {
         this.name = name;
         this.strCompleteDate = strCompleteDate;
-    }
-
-    public WorkOut(String name, int drawable) {
-        this.name = name;
-        this.image = drawable;
-    }
-
-    public WorkOut(String name, boolean checked) {
-        this.name = name;
-        this.checked = checked;
     }
 
     public String getName() {
@@ -45,10 +33,6 @@ public class WorkOut implements Serializable {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
-    }
-
-    public int getImage() {
-        return image;
     }
 
     public String getStrCompleteDate() {

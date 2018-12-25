@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class MainListAdapter extends BaseAdapter {
-    private ArrayList<Challenge> arrChallenge = new ArrayList<Challenge>() ;
+    private ArrayList<Challenge> arrChallenge = new ArrayList<>() ;
 
     public MainListAdapter() {
     }
@@ -30,7 +30,7 @@ public class MainListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.item_listview, parent, false);
         }
 
-        TextView titleTextView = (TextView) convertView.findViewById(R.id.textView1) ;
+        TextView titleTextView = convertView.findViewById(R.id.textView1) ;
 
         Challenge challengeItem = arrChallenge.get(position);
 
@@ -52,19 +52,10 @@ public class MainListAdapter extends BaseAdapter {
                 if(challengeItem.isChecked()){ // 선택되게 보이게하기
                     v.setBackgroundResource(R.color.selectedColor);
                     selectedChallenges.add(challengeItem);
-                    String str = "";
-                    for(int i = 0 ; i < selectedChallenges.size() ; i++){
-                        str+=selectedChallenges.get(i).getChallengeName()+", ";
-                        if(i == selectedChallenges.size()-1){
-                            Log.w("is-", "challenge name : "+str);
-                        }
-                    }
                 }else{
                     v.setBackgroundResource(R.color.gray);
                     selectedChallenges.remove(challengeItem);
                 }
-
-//                Log.w("is-",challengeItem.getChallengeName()+" / "+challengeItem.isChecked()+" / "+challengeItem.getArrWorkOut().size()+" / "+challengeItem.getArrWorkOut().get(0).getName());
             }
         });
 

@@ -133,7 +133,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public int getWokroutRecordCount(){
         int count = 0;
-        ContentValues value = new ContentValues();
         Cursor cursor = null;
         try{
             cursor = sqldb.rawQuery("SELECT * FROM workout_record", null);
@@ -144,7 +143,6 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
 
         }finally{
-            value.clear();
             cursor.close();
         }
         return count;
@@ -155,7 +153,6 @@ public class DBHelper extends SQLiteOpenHelper {
         try{
             sqldb.beginTransaction();
             try{
-                ContentValues value = new ContentValues();
                 Cursor cursor = null;
                 try{
                     String selectedDateStr = mSimpleFormatter.format(selectedDate.getTime());
@@ -167,7 +164,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     e.printStackTrace();
 
                 }finally{
-                    value.clear();
                     cursor.close();
                 }
             }catch(Exception e){
@@ -188,7 +184,6 @@ public class DBHelper extends SQLiteOpenHelper {
         try{
             sqldb.beginTransaction();
             try{
-                ContentValues value = new ContentValues();
                 Cursor cursor = null;
                 try{
                     String selectedDateStr = mSimpleFormatter.format(selectedDate.getTime());
@@ -197,9 +192,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         do{
                             int id = cursor.getInt(0);
                             String workoutName = cursor.getString(1);
-                            String dateFormat = cursor.getString(2);
-                            arrWorkout_ofSelectedDate.add(new WorkOut(workoutName, dateFormat));
-                            Log.v("is-",id+" row : "+workoutName+" / date : "+dateFormat);
+                            String strDate = cursor.getString(2);
+                            arrWorkout_ofSelectedDate.add(new WorkOut(workoutName, strDate));
+                            Log.v("is-",id+" row : "+workoutName+" / date : "+strDate);
                         }while(cursor.moveToNext());
                         Log.v("is-","total workout_record count : "+arrWorkout_ofSelectedDate.size());
                     }else{
@@ -208,7 +203,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     e.printStackTrace();
 
                 }finally{
-                    value.clear();
                     cursor.close();
                 }
             }catch(Exception e){
@@ -265,7 +259,6 @@ public class DBHelper extends SQLiteOpenHelper {
     // 챌린지 테이블 행(row) 개수
     public int getChallengeCount(){
         int count = 0;
-        ContentValues value = new ContentValues();
         Cursor cursor = null;
         try{
             cursor = sqldb.rawQuery("SELECT * FROM challenge", null);
@@ -276,7 +269,6 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
 
         }finally{
-            value.clear();
             cursor.close();
         }
         return count;
@@ -285,7 +277,6 @@ public class DBHelper extends SQLiteOpenHelper {
     // 챌린지 테이블 행(row) 마지막 id 가져오기
     public int getLastInsertId_challengeTable(){
         int id = -1;
-        ContentValues value = new ContentValues();
         Cursor cursor = null;
         try{
             cursor = sqldb.rawQuery("SELECT max(id) FROM challenge", null);
@@ -297,7 +288,6 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
 
         }finally{
-            value.clear();
             cursor.close();
         }
         return id;
@@ -308,7 +298,6 @@ public class DBHelper extends SQLiteOpenHelper {
         try{
             sqldb.beginTransaction();
             try{
-                ContentValues value = new ContentValues();
                 Cursor cursor = null;
                 try{
                     cursor = sqldb.rawQuery("SELECT * FROM challenge", null);
@@ -316,8 +305,31 @@ public class DBHelper extends SQLiteOpenHelper {
                         do{
                             int id = cursor.getInt(0);
                             String challengeName = cursor.getString(1);
-                            arrChallenge.add(new Challenge(id, challengeName));
-                            Log.v("is-",id+" row : "+challengeName);
+
+                            Cursor cursor2 = null;
+                            try{
+                                String query = "SELECT workout.id,workout.name,workout.img_path,workout.challenge_id,challenge.name " +
+                                        "FROM workout LEFT JOIN challenge ON workout.challenge_id = challenge.id " +
+                                        "WHERE workout.challenge_id ="+id;
+                                cursor2 = sqldb.rawQuery(query, null);
+                                ArrayList<WorkOut> arrWorkout = new ArrayList<>();
+                                if(cursor2 != null && cursor2.moveToFirst()){
+                                    do{
+                                        int workout_id = cursor2.getInt(0);
+                                        String workoutName = cursor2.getString(1);
+                                        String imgPath = cursor2.getString(2);
+                                        arrWorkout.add(new WorkOut(workoutName, imgPath,""));
+                                    }while(cursor2.moveToNext());
+
+                                    arrChallenge.add(new Challenge(id, challengeName, arrWorkout));
+                                    Log.v("is-",id+" row : "+challengeName);
+                                }
+                            }catch(Exception e){
+                                e.printStackTrace();
+
+                            }finally{
+                                cursor2.close();
+                            }
                         }while(cursor.moveToNext());
                         Log.v("is-","total challenge count : "+arrChallenge.size());
                     }else{
@@ -326,7 +338,6 @@ public class DBHelper extends SQLiteOpenHelper {
                     e.printStackTrace();
 
                 }finally{
-                    value.clear();
                     cursor.close();
                 }
             }catch(Exception e){
@@ -388,7 +399,6 @@ public class DBHelper extends SQLiteOpenHelper {
     // workout 테이블 행(row) 개수
     public int getWokroutCount(){
         int count = 0;
-        ContentValues value = new ContentValues();
         Cursor cursor = null;
         try{
             cursor = sqldb.rawQuery("SELECT * FROM workout", null);
@@ -399,60 +409,59 @@ public class DBHelper extends SQLiteOpenHelper {
             e.printStackTrace();
 
         }finally{
-            value.clear();
             cursor.close();
         }
         return count;
     }
 
     // 선택된 챌린지의 workout list 가져오기
-    public ArrayList<WorkOut> getArrWokrout_ofSelectedChallenge(ArrayList<Challenge> arrSelectedChallenge){
-        ArrayList<WorkOut> arrWorkout_ofSelectedChallenge = new ArrayList<>();
-        try{
-            sqldb.beginTransaction();
-            try{
-                ContentValues value = new ContentValues();
-                Cursor cursor = null;
-                try{
-                    String whereSentence = "";
-                    for(int i = 0 ; i < arrSelectedChallenge.size() ; i++){
-                        if(i==0){
-                            whereSentence += "WHERE workout.challenge_id = "+arrSelectedChallenge.get(i).getId();
-                        }else{
-                            whereSentence += " OR workout.challenge_id = "+arrSelectedChallenge.get(i).getId();
-                        }
-                    }
-                    String query = "SELECT * FROM workout LEFT JOIN challenge ON workout.challenge_id = challenge.id "+whereSentence;
-                    cursor = sqldb.rawQuery(query, null);
-                    if(cursor != null && cursor.moveToFirst()){
-                        do{
-                            int id = cursor.getInt(0);
-                            String workoutName = cursor.getString(1);
-                            String imgPath = cursor.getString(2);
-                            arrWorkout_ofSelectedChallenge.add(new WorkOut(workoutName, imgPath, ""));
-                            Log.v("is-",id+" row : "+workoutName+" / imgPath : "+imgPath);
-                        }while(cursor.moveToNext());
-                        Log.v("is-","total row count : "+arrWorkout_ofSelectedChallenge.size());
-                    }
-                }catch(Exception e){
-                    e.printStackTrace();
-
-                }finally{
-                    value.clear();
-                    cursor.close();
-                }
-            }catch(Exception e){
-                e.printStackTrace();
-            }
-
-            sqldb.setTransactionSuccessful();
-        }catch(Exception e){
-            e.printStackTrace();
-        }finally{
-            sqldb.endTransaction();
-        }
-        return arrWorkout_ofSelectedChallenge;
-    }
+//    public ArrayList<WorkOut> getArrWokrout_ofSelectedChallenge(ArrayList<Challenge> arrSelectedChallenge){
+//        ArrayList<WorkOut> arrWorkout_ofSelectedChallenge = new ArrayList<>();
+//        try{
+//            sqldb.beginTransaction();
+//            try{
+//                ContentValues value = new ContentValues();
+//                Cursor cursor = null;
+//                try{
+//                    String whereSentence = "";
+//                    for(int i = 0 ; i < arrSelectedChallenge.size() ; i++){
+//                        if(i==0){
+//                            whereSentence += "WHERE workout.challenge_id = "+arrSelectedChallenge.get(i).getId();
+//                        }else{
+//                            whereSentence += " OR workout.challenge_id = "+arrSelectedChallenge.get(i).getId();
+//                        }
+//                    }
+//                    String query = "SELECT * FROM workout LEFT JOIN challenge ON workout.challenge_id = challenge.id "+whereSentence;
+//                    cursor = sqldb.rawQuery(query, null);
+//                    if(cursor != null && cursor.moveToFirst()){
+//                        do{
+//                            int id = cursor.getInt(0);
+//                            String workoutName = cursor.getString(1);
+//                            String imgPath = cursor.getString(2);
+//                            arrWorkout_ofSelectedChallenge.add(new WorkOut(workoutName, imgPath, ""));
+//                            Log.v("is-",id+" row : "+workoutName+" / imgPath : "+imgPath);
+//                        }while(cursor.moveToNext());
+//                        Log.v("is-","total row count : "+arrWorkout_ofSelectedChallenge.size());
+//                    }
+//                }catch(Exception e){
+//                    e.printStackTrace();
+//
+//                }finally{
+//                    value.clear();
+//                    cursor.close();
+//                }
+//            }catch(Exception e){
+//                e.printStackTrace();
+//            }
+//
+//            sqldb.setTransactionSuccessful();
+//        }catch(Exception e){
+//            e.printStackTrace();
+//        }finally{
+//            sqldb.endTransaction();
+//        }
+//        return arrWorkout_ofSelectedChallenge;
+//    }
 
 
 }

@@ -34,7 +34,7 @@ public class AddChallengeListAdapter extends BaseAdapter {
     private static final int SELECT_PICTURE = 123;
     private static final int REQ_SAVE = 124;
 
-    private ArrayList<WorkOut> listViewItemList = new ArrayList<WorkOut>() ;
+    private ArrayList<WorkOut> listViewItemList = new ArrayList<>() ;
 
     private String selectedImagePath = "";
     private Activity activity;

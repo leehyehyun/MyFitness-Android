@@ -48,12 +48,12 @@ public class CompleteActivity extends AppCompatActivity {
         //db에 저장 insert into (todayDate, arrTodayWorkOut.get(i).getName()) from 테이블명;
 
 
-        ImageView leftIcon = (ImageView)findViewById(R.id.left_icon);
-        ImageView rightIcon = (ImageView)findViewById(R.id.right_icon);
-        todayTextView = (TextView) findViewById(R.id.today_date);
-        addviewArea = (LinearLayout) findViewById(R.id.addview_area);
-        addviewScroll = (ScrollView) findViewById(R.id.addview_scroll);
-        btnDelete = (TextView) findViewById(R.id.btn_delete);
+        ImageView leftIcon = findViewById(R.id.left_icon);
+        ImageView rightIcon = findViewById(R.id.right_icon);
+        todayTextView = findViewById(R.id.today_date);
+        addviewArea = findViewById(R.id.addview_area);
+        addviewScroll = findViewById(R.id.addview_scroll);
+        btnDelete = findViewById(R.id.btn_delete);
 
         addview(todayDate);
 
@@ -130,7 +130,7 @@ public class CompleteActivity extends AppCompatActivity {
         addviewScroll.setVisibility(View.GONE);
         for (int i = 0 ; i < arrSelectedDateWorkOut.size() ; i++){
             View view = getLayoutInflater().inflate(R.layout.item_complete, null, false);
-            TextView tv = (TextView) view.findViewById(R.id.textview2);
+            TextView tv = view.findViewById(R.id.textview2);
             tv.setText(arrSelectedDateWorkOut.get(i).getName());
             addviewArea.addView(view);
         }

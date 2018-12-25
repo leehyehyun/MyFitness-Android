@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class WorkoutListAdapter extends BaseAdapter {
-    private ArrayList<WorkOut> arrWorkOutList = new ArrayList<WorkOut>() ;
+    private ArrayList<WorkOut> arrWorkOutList = new ArrayList<>() ;
 
     public WorkoutListAdapter() {
     }
@@ -36,8 +36,8 @@ public class WorkoutListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.item_listview, parent, false);
         }
 
-        TextView titleTextView = (TextView) convertView.findViewById(R.id.textView1);
-        CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.checkbox);
+        TextView titleTextView = convertView.findViewById(R.id.textView1);
+        CheckBox checkbox = convertView.findViewById(R.id.checkbox);
         checkbox.setVisibility(View.VISIBLE);
 
         WorkOut workOut = arrWorkOutList.get(position);
@@ -82,7 +82,7 @@ public class WorkoutListAdapter extends BaseAdapter {
         });
         return convertView;
     }
-    private ArrayList<WorkOut> arrTodayWorkout = new ArrayList<WorkOut>();
+    private ArrayList<WorkOut> arrTodayWorkout = new ArrayList<>();
 
     public void clearArrTodayWorkout(){
         arrTodayWorkout.clear();

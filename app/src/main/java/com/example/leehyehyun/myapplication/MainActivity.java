@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     private ListView list_view;
     private MainListAdapter mainListAdapter;
 
+    private ArrayList<Challenge> arrChallenge;
+//    private ArrayList<WorkOut> arrSelectedWorkout;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -40,22 +43,13 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 }
 
-                // db에서 선택된 챌린지에 해당하는 workout 을 array에 넣기
-                getWorkouts_ofSelectedChallenge_inDB();
-
-
                 Intent intent = new Intent(MainActivity.this, WorkOutListActivity.class);
                 Bundle args = new Bundle();
-                args.putSerializable("arr_workout_list",(Serializable) arrSelectedWorkouts);
+                args.putSerializable("arr_workout_list", getWorkouts_ofSelectedChallenge());
                 intent.putExtra("bundle",args);
                 startActivity(intent);
 //                finish();
 
-                mainListAdapter.clearSelectedChallenges();
-                for(int i = 0 ; i < mainListAdapter.getCount() ; i++){
-                    mainListAdapter.getItem(i).setChecked(false);
-                }
-                mainListAdapter.notifyDataSetChanged();
                 return true;
             case R.id.add_challenge:
                 Intent intent2 = new Intent(MainActivity.this, AddChallengeActivity.class);
@@ -77,34 +71,6 @@ public class MainActivity extends AppCompatActivity {
         mainListAdapter = new MainListAdapter();
         showChallengeList();
     }
-
-//    private ArrayList<WorkOut> getArrWorkOut(){
-//        ArrayList<WorkOut> arrWorkOut = new ArrayList<WorkOut>();
-//        arrWorkOut.add(new WorkOut("스쿼트", R.drawable.squart));
-//        arrWorkOut.add(new WorkOut("와이드스쿼트", R.drawable.squart_wide));
-//        arrWorkOut.add(new WorkOut("스쿼트 위드 레그레이즈", R.drawable.squart_with_leg));
-//        arrWorkOut.add(new WorkOut("얼터네이팅 런지", R.drawable.altern_lunge));
-//        arrChallenge.add(new Challenge("하체챌린지", arrWorkOut));
-//        return arrWorkOut;
-//    }
-//    private ArrayList<WorkOut> getArrWorkOut2(){
-//        ArrayList<WorkOut> arrWorkOut2 = new ArrayList<WorkOut>();
-//        arrWorkOut2.add(new WorkOut("점핑잭", R.drawable.jumpingjack));
-//        arrWorkOut2.add(new WorkOut("하이니", R.drawable.high_knees));
-//        arrWorkOut2.add(new WorkOut("백런지, 하이니", R.drawable.back_lunge_to_high_knee));
-//        arrChallenge.add(new Challenge("전신유산소", arrWorkOut2));
-//        return arrWorkOut2;
-//    }
-//    private ArrayList<WorkOut> getArrWorkOut3(){
-//        ArrayList<WorkOut> arrWorkOut3 = new ArrayList<WorkOut>();
-//        arrWorkOut3.add(new WorkOut("벤트니 크런치", R.drawable.bentni_crunch));
-//        arrWorkOut3.add(new WorkOut("플러터 킥", R.drawable.flerter_kick));
-//        arrWorkOut3.add(new WorkOut("사이드 크런치", R.drawable.side_crunch));
-//        arrWorkOut3.add(new WorkOut("세미 바이시클 크런치", R.drawable.semi_bycicle_crunch));
-//        arrWorkOut3.add(new WorkOut("시티드 니업", R.drawable.sited_knee_up));
-//        arrChallenge.add(new Challenge("복근운동챌린지", arrWorkOut3));
-//        return arrWorkOut3;
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -137,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<Challenge> arrChallenge;
     private void getChallenge_inDB(){
         DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
         arrChallenge = mDBHelper.getArrChallenge();
@@ -153,10 +118,27 @@ public class MainActivity extends AppCompatActivity {
         list_view.setAdapter(mainListAdapter);
     }
 
-    private ArrayList<WorkOut> arrSelectedWorkouts;
-    private void getWorkouts_ofSelectedChallenge_inDB(){
-        DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
-        arrSelectedWorkouts = mDBHelper.getArrWokrout_ofSelectedChallenge(mainListAdapter.getSelectedChallenges());
+    // 선택된 챌린지에 해당하는 workout 을 array에 넣기
+    private ArrayList<WorkOut> getWorkouts_ofSelectedChallenge(){
+        ArrayList<WorkOut> arrSelectedWorkout = new ArrayList<>();
+        ArrayList<Challenge> arrSelectedChallenge = mainListAdapter.getSelectedChallenges();
+        for (int i = 0 ; i < arrSelectedChallenge.size() ; i++){
+            arrSelectedWorkout.addAll(arrSelectedChallenge.get(i).getArrWorkOut());
+        }
+        return arrSelectedWorkout;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unselectedList();
+    }
+
+    private void unselectedList(){
+        mainListAdapter.clearSelectedChallenges();
+        for(int i = 0 ; i < mainListAdapter.getCount() ; i++){
+            mainListAdapter.getItem(i).setChecked(false);
+        }
+        mainListAdapter.notifyDataSetChanged();
+    }
 }

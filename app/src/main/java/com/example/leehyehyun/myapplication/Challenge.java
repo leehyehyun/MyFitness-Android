@@ -4,13 +4,20 @@ import java.util.ArrayList;
 
 public class Challenge {
     private String challengeName = "";
-    private ArrayList<WorkOut> arrWorkOut = new ArrayList<WorkOut>();
+    private ArrayList<WorkOut> arrWorkOut = new ArrayList<>();
     private boolean checked;
     private int id;
 
     public Challenge(int id, String challengeName) {
         this.id = id;
         this.challengeName = challengeName;
+        this.arrWorkOut = arrWorkOut;
+    }
+
+    public Challenge(int id, String challengeName, ArrayList<WorkOut> arrWorkOut) {
+        this.id = id;
+        this.challengeName = challengeName;
+        this.arrWorkOut = arrWorkOut;
     }
 
     public String getChallengeName() {
