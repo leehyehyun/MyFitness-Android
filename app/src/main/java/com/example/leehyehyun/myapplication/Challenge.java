@@ -6,10 +6,11 @@ public class Challenge {
     private String challengeName = "";
     private ArrayList<WorkOut> arrWorkOut = new ArrayList<WorkOut>();
     private boolean checked;
+    private int id;
 
-    public Challenge(String challengeName, ArrayList<WorkOut> _arrWorkOut) {
+    public Challenge(int id, String challengeName) {
+        this.id = id;
         this.challengeName = challengeName;
-        this.arrWorkOut = _arrWorkOut;
     }
 
     public String getChallengeName() {
@@ -38,5 +39,13 @@ public class Challenge {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -99,25 +99,25 @@ public class CompleteActivity extends AppCompatActivity {
 
     private void addTodayWorkOutDB(ArrayList<WorkOut> arrTodayWorkOut){
         DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
-        mDBHelper.insertDBRow(arrTodayWorkOut);
+        mDBHelper.insertWorkoutRecord(arrTodayWorkOut);
     }
 
     private int getSelectedDBrowCount(Date selectedDate){
         DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
-        int count = mDBHelper.getSelectedDateWokroutRowCount(selectedDate);
+        int count = mDBHelper.getWokroutRecordCount_ofSelectedDate(selectedDate);
         Log.v("is-",mSimpleFormatter.format(selectedDate)+" row count : "+count);
         return count;
     }
 
     private ArrayList<WorkOut> getDBdata(Date selectedDate){
         DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
-        ArrayList<WorkOut> arr = mDBHelper.getArrSelectedDateWorkout(selectedDate);
+        ArrayList<WorkOut> arr = mDBHelper.getArrWokroutRecord_ofSelectedDate(selectedDate);
         return arr;
     }
 
     private void deleteSelectedDBrows(Date selectedDate){
         DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
-        mDBHelper.deleteDBRow(selectedDate);
+        mDBHelper.deleteWorkoutRecord(selectedDate);
         addview(selectedDate);
     }
 

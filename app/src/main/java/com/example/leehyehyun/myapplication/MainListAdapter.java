@@ -1,6 +1,7 @@
 package com.example.leehyehyun.myapplication;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +11,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class MainListAdapter extends BaseAdapter {
-    private ArrayList<Challenge> listViewItemList = new ArrayList<Challenge>() ;
-    private ArrayList<WorkOut> arrWorkOutList = new ArrayList<WorkOut>() ;
+    private ArrayList<Challenge> arrChallenge = new ArrayList<Challenge>() ;
 
     public MainListAdapter() {
     }
 
     @Override
     public int getCount() {
-        return listViewItemList.size() ;
+        return arrChallenge.size() ;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class MainListAdapter extends BaseAdapter {
 
         TextView titleTextView = (TextView) convertView.findViewById(R.id.textView1) ;
 
-        Challenge challengeItem = listViewItemList.get(position);
+        Challenge challengeItem = arrChallenge.get(position);
 
         titleTextView.setText(challengeItem.getChallengeName());
 
@@ -51,10 +51,17 @@ public class MainListAdapter extends BaseAdapter {
 
                 if(challengeItem.isChecked()){ // 선택되게 보이게하기
                     v.setBackgroundResource(R.color.selectedColor);
-                    arrWorkOutList.addAll(challengeItem.getArrWorkOut());
+                    selectedChallenges.add(challengeItem);
+                    String str = "";
+                    for(int i = 0 ; i < selectedChallenges.size() ; i++){
+                        str+=selectedChallenges.get(i).getChallengeName()+", ";
+                        if(i == selectedChallenges.size()-1){
+                            Log.w("is-", "challenge name : "+str);
+                        }
+                    }
                 }else{
                     v.setBackgroundResource(R.color.gray);
-                    arrWorkOutList.removeAll(challengeItem.getArrWorkOut());
+                    selectedChallenges.remove(challengeItem);
                 }
 
 //                Log.w("is-",challengeItem.getChallengeName()+" / "+challengeItem.isChecked()+" / "+challengeItem.getArrWorkOut().size()+" / "+challengeItem.getArrWorkOut().get(0).getName());
@@ -71,21 +78,23 @@ public class MainListAdapter extends BaseAdapter {
 
     @Override
     public Challenge getItem(int position) {
-        return listViewItemList.get(position) ;
+        return arrChallenge.get(position) ;
     }
 
-    private ArrayList<WorkOut> arrWorkOut = new ArrayList<WorkOut>();
-
-    public void addItem(Challenge mChallenge) {
-        listViewItemList.add(mChallenge);
-        arrWorkOut.addAll(mChallenge.getArrWorkOut());
+    public void setChallengeList(ArrayList<Challenge> _arrChallenge) {
+        arrChallenge.addAll(_arrChallenge);
     }
 
-    public ArrayList<WorkOut> getArrWorkOutList() {
-        return arrWorkOutList;
+    private ArrayList<Challenge> selectedChallenges = new ArrayList<>();
+    public ArrayList<Challenge> getSelectedChallenges(){
+        return selectedChallenges;
     }
 
-    public void setClear() {
-        arrWorkOutList.clear();
+    public void clearArrChallenge(){
+        arrChallenge.clear();
+    }
+
+    public void clearSelectedChallenges(){
+        selectedChallenges.clear();
     }
 }

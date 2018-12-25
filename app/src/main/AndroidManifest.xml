@@ -23,7 +23,7 @@
         <activity android:name=".WorkOutImageActivity"></activity>
         <activity android:name=".CompleteActivity"></activity>
         <activity android:name=".AddChallengeActivity"></activity>
-        <activity android:name=".AddWorkoutActivity" android:theme="@style/Theme.AppCompat.Light.Dialog.Alert"></activity>
+        <activity android:name=".AddWorkoutActivity" android:theme="@style/DialogTheme"></activity>
 
     </application>
 
