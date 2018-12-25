@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.Serializable;
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int ADDED_CHALLENGE = 126;
 
     private ListView list_view;
+    private TextView btnDelete;
     private MainListAdapter mainListAdapter;
 
     private ArrayList<Challenge> arrChallenge;
@@ -67,9 +70,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         list_view = findViewById(R.id.list_view);
+        btnDelete = findViewById(R.id.btn_delete);
 
         mainListAdapter = new MainListAdapter();
         showChallengeList();
+
+        if(GlobalValue.isAdmin){
+            btnDelete.setVisibility(View.VISIBLE);
+        }else{
+            btnDelete.setVisibility(View.GONE);
+        }
+
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
+                mDBHelper.deleteChallenge(mainListAdapter.getSelectedChallenges());
+                showChallengeList();
+            }
+        });
     }
 
     @Override
@@ -109,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showChallengeList(){
-        //초기화 (챌린지 추가시, 중복으로 추가됨 방지)
+        // 초기화 (챌린지 추가시, 중복으로 추가됨 방지)
         mainListAdapter.clearArrChallenge();
 
         // db에 저장된 챌린지 가져와서 리스트에 노출시키기

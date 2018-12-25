@@ -55,13 +55,19 @@ public class CompleteActivity extends AppCompatActivity {
         addviewScroll = findViewById(R.id.addview_scroll);
         btnDelete = findViewById(R.id.btn_delete);
 
+        if(GlobalValue.isAdmin){
+            btnDelete.setVisibility(View.VISIBLE);
+        }else{
+            btnDelete.setVisibility(View.GONE);
+        }
+
         addview(todayDate);
 
         leftIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Date leftDate = new Date(selectedDate.getTime()-(long)1000*60*60*24);
-                if(getSelectedDBrowCount(leftDate)==0){
+                if(getSelectedDBrowCount(leftDate) == 0){
                     Log.v("is-",mSimpleFormatter.format(leftDate)+" : 해당 날짜에 기록이 없음");
                     Toast.makeText(CompleteActivity.this, "기록이 없습니다.", Toast.LENGTH_SHORT).show();
                     return;
@@ -105,7 +111,6 @@ public class CompleteActivity extends AppCompatActivity {
     private int getSelectedDBrowCount(Date selectedDate){
         DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
         int count = mDBHelper.getWokroutRecordCount_ofSelectedDate(selectedDate);
-        Log.v("is-",mSimpleFormatter.format(selectedDate)+" row count : "+count);
         return count;
     }
 
