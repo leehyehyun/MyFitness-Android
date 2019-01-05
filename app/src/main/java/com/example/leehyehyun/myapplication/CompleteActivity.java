@@ -48,12 +48,18 @@ public class CompleteActivity extends AppCompatActivity {
         //db에 저장 insert into (todayDate, arrTodayWorkOut.get(i).getName()) from 테이블명;
 
 
-        ImageView leftIcon = (ImageView)findViewById(R.id.left_icon);
-        ImageView rightIcon = (ImageView)findViewById(R.id.right_icon);
-        todayTextView = (TextView) findViewById(R.id.today_date);
-        addviewArea = (LinearLayout) findViewById(R.id.addview_area);
-        addviewScroll = (ScrollView) findViewById(R.id.addview_scroll);
-        btnDelete = (TextView) findViewById(R.id.btn_delete);
+        ImageView leftIcon = findViewById(R.id.left_icon);
+        ImageView rightIcon = findViewById(R.id.right_icon);
+        todayTextView = findViewById(R.id.today_date);
+        addviewArea = findViewById(R.id.addview_area);
+        addviewScroll = findViewById(R.id.addview_scroll);
+        btnDelete = findViewById(R.id.btn_delete);
+
+        if(GlobalValue.isAdmin){
+            btnDelete.setVisibility(View.VISIBLE);
+        }else{
+            btnDelete.setVisibility(View.GONE);
+        }
 
         addview(todayDate);
 
@@ -61,7 +67,7 @@ public class CompleteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Date leftDate = new Date(selectedDate.getTime()-(long)1000*60*60*24);
-                if(getSelectedDBrowCount(leftDate)==0){
+                if(getSelectedDBrowCount(leftDate) == 0){
                     Log.v("is-",mSimpleFormatter.format(leftDate)+" : 해당 날짜에 기록이 없음");
                     Toast.makeText(CompleteActivity.this, "기록이 없습니다.", Toast.LENGTH_SHORT).show();
                     return;
@@ -99,25 +105,24 @@ public class CompleteActivity extends AppCompatActivity {
 
     private void addTodayWorkOutDB(ArrayList<WorkOut> arrTodayWorkOut){
         DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
-        mDBHelper.insertDBRow(arrTodayWorkOut);
+        mDBHelper.insertWorkoutRecord(arrTodayWorkOut);
     }
 
     private int getSelectedDBrowCount(Date selectedDate){
         DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
-        int count = mDBHelper.getSelectedDateWokroutRowCount(selectedDate);
-        Log.v("is-",mSimpleFormatter.format(selectedDate)+" row count : "+count);
+        int count = mDBHelper.getWokroutRecordCount_ofSelectedDate(selectedDate);
         return count;
     }
 
     private ArrayList<WorkOut> getDBdata(Date selectedDate){
         DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
-        ArrayList<WorkOut> arr = mDBHelper.getArrSelectedDateWorkout(selectedDate);
+        ArrayList<WorkOut> arr = mDBHelper.getArrWokroutRecord_ofSelectedDate(selectedDate);
         return arr;
     }
 
     private void deleteSelectedDBrows(Date selectedDate){
         DBHelper mDBHelper = DBHelper.getInstance(getApplicationContext());
-        mDBHelper.deleteDBRow(selectedDate);
+        mDBHelper.deleteWorkoutRecord(selectedDate);
         addview(selectedDate);
     }
 
@@ -130,7 +135,7 @@ public class CompleteActivity extends AppCompatActivity {
         addviewScroll.setVisibility(View.GONE);
         for (int i = 0 ; i < arrSelectedDateWorkOut.size() ; i++){
             View view = getLayoutInflater().inflate(R.layout.item_complete, null, false);
-            TextView tv = (TextView) view.findViewById(R.id.textview2);
+            TextView tv = view.findViewById(R.id.textview2);
             tv.setText(arrSelectedDateWorkOut.get(i).getName());
             addviewArea.addView(view);
         }

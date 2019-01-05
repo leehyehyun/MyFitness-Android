@@ -15,7 +15,7 @@ import java.util.Date;
 public class WorkOutListActivity extends AppCompatActivity {
     private ListView list_view;
     private ArrayList<WorkOut> arrWorkOutList;
-    private WorkoutListAdapter2 mWorkoutListAdapter;
+    private WorkoutListAdapter mWorkoutListAdapter;
 
     public WorkOutListActivity() {
     }
@@ -58,7 +58,7 @@ public class WorkOutListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
 
-        list_view = (ListView)findViewById(R.id.list_view);
+        list_view = findViewById(R.id.list_view);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -66,7 +66,7 @@ public class WorkOutListActivity extends AppCompatActivity {
         Bundle args = intent.getBundleExtra("bundle");
         arrWorkOutList = (ArrayList<WorkOut>) args.getSerializable("arr_workout_list");
 
-        mWorkoutListAdapter = new WorkoutListAdapter2();
+        mWorkoutListAdapter = new WorkoutListAdapter();
         mWorkoutListAdapter.setArrWorkOutList(arrWorkOutList);
         list_view.setAdapter(mWorkoutListAdapter);
 

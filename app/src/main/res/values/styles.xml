@@ -8,4 +8,11 @@
         <item name="colorAccent">#6200EE</item>
     </style>
 
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#6C7476</item>
+        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorAccent">#6200EE</item>
+    </style>
+
 </resources>
